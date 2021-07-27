@@ -19,6 +19,10 @@ public:
 private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
+    void horizontalSlider_slot();
+    void intensity_slot();
+    void horizontalSlider_2_slot();
+    void radius_slot();
 
 private:
     Ui::MainWindow *ui;

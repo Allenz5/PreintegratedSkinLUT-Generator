@@ -18,14 +18,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->intensity->setMaximum(1.00);
+    //initialize ui
+    //connect signal between ui
     ui->intensity->setValue(0.1);
-    ui->intensity->setMinimum(0.001);
+    ui->horizontalSlider->setValue(10);
+    ui->intensity->setMaximum(1.00);
+    ui->horizontalSlider->setMaximum(100);
+    ui->intensity->setMinimum(0.01);
+    ui->horizontalSlider->setMinimum(1);
     ui->intensity->setSingleStep(0.01);
-    ui->radius->setMaximum(10.00);
+    ui->horizontalSlider->setSingleStep(1);
+    ui->horizontalSlider->setPageStep(1);
+    connect(ui->intensity, SIGNAL(valueChanged(double)), this, SLOT(horizontalSlider_slot()));
+    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(intensity_slot()));
+
     ui->radius->setValue(1);
+    ui->horizontalSlider_2->setValue(10);
+    ui->radius->setMaximum(10.00);
+    ui->horizontalSlider_2->setMaximum(100);
     ui->radius->setMinimum(0.5);
+    ui->horizontalSlider_2->setMinimum(5);
     ui->radius->setSingleStep(0.5);
+    ui->horizontalSlider_2->setSingleStep(5);
+    ui->horizontalSlider_2->setPageStep(5);
+    connect(ui->radius, SIGNAL(valueChanged(double)), this, SLOT(horizontalSlider_2_slot()));
+    connect(ui->horizontalSlider_2, SIGNAL(valueChanged(int)), this, SLOT(radius_slot()));
 }
 
 MainWindow::~MainWindow()
@@ -68,9 +85,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     //get the saving address
-    QString filename = QFileDialog::getSaveFileName(this,tr("Save Image"),"LUT.bmp",tr(".bmp")); //选择路径
+    QString filename = QFileDialog::getSaveFileName(this,tr("Save Image"),"LUT.bmp",tr(".bmp")); //choose saving path
 
-    QTextCodec *code = QTextCodec::codecForName("GB2312");//解决中文路径问题
+    QTextCodec *code = QTextCodec::codecForName("GB2312");
     std::string name = code->fromUnicode(filename).data();
 
     //get size of the lut
@@ -95,4 +112,24 @@ void MainWindow::on_pushButton_2_clicked()
     //delete lut
     delete myLut;
     QMessageBox::about(this,tr("Message"),tr("Finish Generating"));
+}
+
+void MainWindow::horizontalSlider_slot()
+{
+    ui->horizontalSlider->setValue((int)(ui->intensity->value()*100));
+}
+
+void MainWindow::intensity_slot()
+{
+    ui->intensity->setValue((double)(ui->horizontalSlider->value())/100);
+}
+
+void MainWindow::horizontalSlider_2_slot()
+{
+    ui->horizontalSlider_2->setValue((int)(ui->radius->value()*10));
+}
+
+void MainWindow::radius_slot()
+{
+    ui->radius->setValue((double)(ui->horizontalSlider_2->value())/10);
 }
